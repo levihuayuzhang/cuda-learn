@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "CUDA C++: Launch",
+            "type": "cuda-gdb",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/debug/${fileBasenameNoExtension}",
+            "preLaunchTask": "cleanRebuild"
+        }
+    ]
+}
