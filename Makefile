@@ -332,16 +332,17 @@ hello: hello.o
 	# $(EXEC) mkdir -p ./bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 	# $(EXEC) cp $@ ./bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 	$(EXEC) mkdir -p ./bin/$(BUILD_TYPE)
-	$(EXEC) mv $@ ./bin/$(BUILD_TYPE)
+	$(EXEC) mv $@ ./bin/$(BUILD_TYPE)/
+	$(EXEC) mv $< ./bin/$(BUILD_TYPE)/
 
 run: build
-	$(EXEC) ./hello
+	$(EXEC) ./bin/$(BUILD_TYPE)/hello
 
 testrun: build
 
 clean:
 	rm -f hello hello.o
-	rm -rf ./bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/hello
+	rm -rf ./bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 	rm -rf ./bin/
 
 clobber: clean

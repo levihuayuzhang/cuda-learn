@@ -1,11 +1,13 @@
-#include <stdio.h>
+// #include <stdio.h>
 #include <iostream>
-#include <cuda.h>
-#define N 512
+// #include <cuda.h>
+#define N (2048*2048)
+#define THREADS_PER_BLOCK 512
 
-__global__ void multi(int *a, int *b, int *c){
-    // c[blockIdx.x] = a[blockIdx.x] * b[blockIdx.x];
-    c[threadIdx.x] = a[threadIdx.x] * b[threadIdx.x];
+__global__ void multi(int *a, int *b, int *c, int n){
+    int index = threadIdx.x + blockIdx.x * blockDim.x;
+    if (index < n)
+        c[index] = a[index] * b[index];
 }
 
 //populate vectors with random ints
@@ -65,14 +67,13 @@ int main(void) {
     cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
 
-    // multi<<<N,1>>>(d_a, d_b, d_c); // launch kernel on GPU with N blocks
-    multi<<<1,N>>>(d_a, d_b, d_c); // launch kernel on GPU with N threads
+    multi<<<N/THREADS_PER_BLOCK,THREADS_PER_BLOCK>>>(d_a, d_b, d_c, N);
 
     cudaMemcpy(c, d_c, size, cudaMemcpyDeviceToHost);
 
-    for (int i = 0; i < N; i++) {
-        printf("Result for c[%d] is %d.\n", i, c[i]);
-    }
+    // for (int i = 0; i < N; i++) {
+    //     printf("Result for c[%d] is %d.\n", i, c[i]);
+    // }
 
     free(a);
     free(b);
