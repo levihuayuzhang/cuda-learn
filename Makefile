@@ -32,7 +32,7 @@
 ################################################################################
 
 # Location of the CUDA Toolkit
-CUDA_PATH ?= /opt/cuda/
+CUDA_PATH ?= /usr/local/cuda
 
 ##############################
 # start deprecated interface #
@@ -304,7 +304,7 @@ GENCODE_FLAGS += -gencode arch=compute_$(HIGHEST_SM),code=compute_$(HIGHEST_SM)
 endif
 endif
 
-ALL_CCFLAGS += --threads 0 --std=c++11
+ALL_CCFLAGS += --threads 0 --std=c++14
 
 ifeq ($(SAMPLE_ENABLED),0)
 EXEC ?= @echo "[@]"
@@ -324,7 +324,7 @@ build: hello
 # 	@echo "Sample is ready - all dependencies have been met"
 # endif
 
-hello.o:hello.cu
+hello.o:src/hello.cu
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 hello: hello.o
