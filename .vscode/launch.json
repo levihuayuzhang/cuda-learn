@@ -1,11 +1,20 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
-            "name": "CUDA C++: Launch",
+            "name": "CUDA CMake: Launch",
             "type": "cuda-gdb",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/debug/${fileBasenameNoExtension}",
-            "preLaunchTask": "cleanRebuild"
+            "program": "${command:cmake.launchTargetPath}",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "preLaunchTask": "CMake: clean rebuild"
         }
     ]
 }
