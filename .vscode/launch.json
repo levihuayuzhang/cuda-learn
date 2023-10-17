@@ -2,12 +2,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "CUDA CMake: Launch",
-            "type": "cuda-gdb",
+            "name": "CUDA-CMake:Launch",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
+            // "debuggerPath": "/usr/local/cuda/bin/cuda-gdb",
             "environment": [
                 {
                     "name": "PATH",
@@ -15,6 +15,20 @@
                 }
             ],
             "preLaunchTask": "CMake: clean rebuild"
-        }
+        },
+        // {
+        //     "name": "CUDA GDB Server: Launch",
+        //     "type": "cuda-gdbserver",
+        //     "request": "launch",
+        //     "server": "cuda-gdbserver",
+        //     "program": "${command:cmake.launchTargetPath}",
+        //     "target": {
+        //         "host": "127.0.0.1",
+		// 		"port": "1234"
+        //     },
+        //     // "sysroot": "",
+        //     // "debuggerPath": "/usr/local/cuda/bin/cuda-gdb",
+        //     "preLaunchTask": "Nsight: autostart (localhost)"
+        // }
     ]
 }

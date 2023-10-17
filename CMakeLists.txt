@@ -18,11 +18,23 @@ endif()
 file(GLOB cpu_source_files "${CMAKE_SOURCE_DIR}/src/*.cc")
 file(GLOB gpu_source_files "${CMAKE_SOURCE_DIR}/src/*.cu")
 
-add_executable(${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${cpu_source_files} ${gpu_source_files}) 
-set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+# add_executable(${PROJECT_NAME})
+add_executable(hello)
+target_sources(hello PRIVATE ${cpu_source_files} ${gpu_source_files}) 
+set_target_properties(hello PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 # enable debug device code
+# https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-G>)
+    set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -g")
+    set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -G")
 endif()
+
+# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -v")
+# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo")
+# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --ptxas-options=-v")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --std=c++11")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -m64")
+
+
+# target_compile_options(hello PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-G>) # for specific target
