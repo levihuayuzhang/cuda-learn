@@ -1,6 +1,9 @@
 // #include <stdio.h>
 #include <iostream>
 #include <cuda.h>
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
+
 #define N (2048*2048)
 #define THREADS_PER_BLOCK 512
 

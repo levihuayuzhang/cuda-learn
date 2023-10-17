@@ -11,19 +11,5 @@
             "debuggerPath": "/usr/local/cuda/bin/cuda-gdb",
             "preLaunchTask": "CMake: clean rebuild"
         }
-        // {
-        //     "name": "CUDA GDB Server: Launch",
-        //     "type": "cuda-gdbserver",
-        //     "request": "launch",
-        //     "server": "cuda-gdbserver",
-        //     "program": "${command:cmake.launchTargetPath}",
-        //     "target": {
-        //         "host": "127.0.0.1",
-		// 		"port": "1234"
-        //     },
-        //     // "sysroot": "",
-        //     // "debuggerPath": "/usr/local/cuda/bin/cuda-gdb",
-        //     "preLaunchTask": "Nsight: autostart (localhost)"
-        // }
     ]
 }
