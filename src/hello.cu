@@ -10,8 +10,8 @@ __global__ void multi(int *a, int *b, int *c, int n){
         c[index] = a[index] * b[index];
 }
 
-__global__ void hello(void) {
-    printf("hello from device..");
+__global__ void helloass(void) {
+    printf("hello ass from device..");
 }
 
 //populate vectors with random ints
@@ -53,7 +53,7 @@ void DisplayHeader()
 
 int main(void) {
     // DisplayHeader();
-    hello<<<1,1>>>();
+    helloass<<<1,1>>>();
 
     int *a, *b, *c; // host copies
     int *d_a, *d_b, *d_c; // device copies
@@ -68,9 +68,13 @@ int main(void) {
     b = (int*)malloc(size); random_ints(b, N);
     c = (int*)malloc(size);
 
+    printf("malloc end");
+
     // copy host intput value to device
     cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
+
+    printf("cuda meme copy");
 
     multi<<<(N-1+THREADS_PER_BLOCK)/THREADS_PER_BLOCK,THREADS_PER_BLOCK>>>(d_a, d_b, d_c, N);
 

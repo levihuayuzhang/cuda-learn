@@ -31,7 +31,8 @@ int main(void) {
     float* res = saxpy_cpu(n, 2.0, x, y);
 
     for (int i = 0; i < n; i++) {
-        printf("%f\n", res[i]);
+        if (i == 0)
+            printf("%d: %f\n", i, res[i]);
     }
 
     return 0;

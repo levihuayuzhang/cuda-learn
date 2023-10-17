@@ -14,14 +14,17 @@ if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
     set(CMAKE_CUDA_ARCHITECTURES 89)
 endif()
 
-# define files
-file(GLOB cpu_source_files "${CMAKE_SOURCE_DIR}/src/*.cc")
-file(GLOB gpu_source_files "${CMAKE_SOURCE_DIR}/src/*.cu")
-
+# # define files
+# file(GLOB cpu_source_files "${CMAKE_SOURCE_DIR}/src/*.cc")
+# file(GLOB gpu_source_files "${CMAKE_SOURCE_DIR}/src/*.cu")
 # add_executable(${PROJECT_NAME})
+# target_sources(${PROJECT_NAME} PRIVATE ${cpu_source_files} ${gpu_source_files}) 
+
 add_executable(hello)
-target_sources(hello PRIVATE ${cpu_source_files} ${gpu_source_files}) 
+target_sources(hello PRIVATE ${CMAKE_SOURCE_DIR}/src/hello.cu) 
 set_target_properties(hello PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+
+add_executable(saxpu-cpu ${CMAKE_SOURCE_DIR}/src/saxpy/saxpu.c)
 
 # enable debug device code
 # https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html
@@ -33,8 +36,8 @@ endif()
 # set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -v")
 # set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo")
 # set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --ptxas-options=-v")
-set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --std=c++11")
-set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -m64")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --std=c++14")
+# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -m64")
 
 
 # target_compile_options(hello PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-G>) # for specific target
