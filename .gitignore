@@ -2,3 +2,6 @@ bin
 build
 **.o
 **.out
+**.nsys-rep
+**.sqlite
+**/profile.txt

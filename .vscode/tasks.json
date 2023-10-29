@@ -9,10 +9,35 @@
             ],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                // "isDefault": true
             },
-            "problemMatcher": ["$nvcc"],
+            "problemMatcher": [
+                "$nvcc"
+            ],
             "detail": "CMake clean & rebuild"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: nvcc build active file",
+            "command": "/usr/local/cuda/bin/nvcc",
+            "args": [
+                "-g",
+                "-G",
+                "${file}",
+                "-o",
+                "${workspaceFolder}/build/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
-    ]
+    ],
+    "version": "2.0.0"
 }

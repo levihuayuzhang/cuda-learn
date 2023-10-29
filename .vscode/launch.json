@@ -5,11 +5,15 @@
             "name": "CUDA-CMake:Launch",
             "type": "cuda-gdb",
             "request": "launch",
-            "program": "${command:cmake.launchTargetPath}",
+            // "program": "${command:cmake.launchTargetPath}",
+            "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
             "stopAtEntry": false,
-            "initCommands": ["-enable-pretty-printing"],
+            "initCommands": [
+                "-enable-pretty-printing"
+            ],
             "debuggerPath": "/usr/local/cuda/bin/cuda-gdb",
-            "preLaunchTask": "CMake: clean rebuild"
+            // "preLaunchTask": "CMake: clean rebuild"
+            "preLaunchTask": "C/C++: nvcc build active file"
         }
     ]
 }

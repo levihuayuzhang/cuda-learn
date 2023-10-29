@@ -6,11 +6,10 @@
                 "${workspaceFolder}/src/include"
             ],
             "defines": [],
-            "cStandard": "c99",
-            "cppStandard": "c++11",
-            "intelliSenseMode": "linux-clang-x64",
-            "compilerPath": "/usr/local/cuda/bin/nvcc",
-            "configurationProvider": "ms-vscode.cmake-tools"
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerPath": "/usr/local/cuda/bin/nvcc"
         }
     ],
     "version": 4
