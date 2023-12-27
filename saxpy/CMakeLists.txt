@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.22)
-project(cuda-learn CXX C)
-enable_language(CUDA)
+# cmake_minimum_required(VERSION 3.22)
+# project(cuda-learn CXX C)
+# enable_language(CUDA)
 
 # # Find CUDA
 # find_package(CUDA QUIET)
@@ -24,21 +24,21 @@ enable_language(CUDA)
 #   list(APPEND LIBRARIES "m")
 # endif()
 
-find_package(CUDAToolkit REQUIRED)
+# find_package(CUDAToolkit REQUIRED)
 # set(CUDA_RUNTIME_LIBRARY Shared)
 
-set(CMAKE_CUDA_STANDARD 14)
-set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+# set(CMAKE_CUDA_STANDARD 17)
+# set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
-# CUDA Arch version
-set(CMAKE_CUDA_ARCHITECTURES 89)
+# # CUDA Arch version
+# set(CMAKE_CUDA_ARCHITECTURES 89)
 
 # enable debug device code
 # https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -G")
-endif()
-# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo")
+# if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+#     set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -G")
+# endif()
+# # set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo")
 
 # set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -m64")
 # set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -v")
@@ -50,13 +50,5 @@ endif()
 # add_executable(${PROJECT_NAME})
 # target_sources(${PROJECT_NAME} PRIVATE ${cpu_source_files} ${gpu_source_files}) 
 
-
-add_executable(vector_multi)
-target_sources(vector_multi PRIVATE ${CMAKE_SOURCE_DIR}/src/vector_multi.cu) 
-set_target_properties(vector_multi PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-
-add_executable(saxpu-cpu ${CMAKE_SOURCE_DIR}/src/saxpy/saxpy.c)
-add_executable(saxpu-cuda ${CMAKE_SOURCE_DIR}/src/saxpy/saxpy_cuda.cu)
-
-
-target_link_libraries(vector_multi ${CUDA_LIBRARIES})
+add_executable(saxpu-cpu saxpy.c)
+add_executable(saxpu-cuda saxpy_cuda.cu)

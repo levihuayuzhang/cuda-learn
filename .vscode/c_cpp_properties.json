@@ -3,13 +3,14 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/src/include"
+                "${workspaceFolder}/**"
             ],
             "defines": [],
-            "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "linux-gcc-x64",
-            "compilerPath": "/usr/local/cuda/bin/nvcc"
+            "compilerPath": "/usr/bin/clang",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cStandard": "c17",
+            "cppStandard": "c++17"
         }
     ],
     "version": 4
