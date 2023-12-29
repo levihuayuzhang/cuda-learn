@@ -5,3 +5,4 @@ build
 **.nsys-rep
 **.sqlite
 **/profile.txt
+**/.cache

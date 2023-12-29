@@ -18,7 +18,10 @@ int recursiveReduce(int *data, int const size)
 }
 
 /**
- * @brief Neighbored pair implementation with divergence
+ * @brief 
+ * Kernel 1
+ * Neighbored pair implementation with divergence
+ * only use even number of thread, highly divergent
  * 
  * @param g_idata global input data address
  * @param d_odata global output data address
@@ -44,6 +47,76 @@ __global__ void reduceNeighbored (int *g_idata, int *g_odata, unsigned int n)
 		}
 		__syncthreads(); // inner block sync (wait for each block to finish)
 	}
+
+    // store result from each block (1st elements) to out put array
+    if (tid == 0) g_odata[blockIdx.x] = idata[0];
+}
+
+/**
+ * @brief kernel 2 
+ * less active thread compared to kernel 1
+ * 
+ * @param g_idata 
+ * @param g_odata 
+ * @param n 
+ * @return __global__ 
+ */
+__global__ void reduceNeighboredLess (int *g_idata, int *g_odata, unsigned int n)
+{
+    unsigned int tid = threadIdx.x;
+	unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // data index for each bloack (local pointer) in global mem
+	int *idata = g_idata + blockIdx.x * blockDim.x;
+
+    // boundary check
+	if (idx >= n) return;
+
+	for (int stride = 1; stride > 0; stride *= 2)
+	{   // array index for 
+        int index = 2 * stride * tid;
+
+		if (index < blockDim.x)
+		{
+            // use index
+			idata[index] += idata[index + stride];
+		}
+		__syncthreads(); // inner block sync (wait for each block to finish)
+	}
+    
+
+    // store result from each block (1st elements) to out put array
+    if (tid == 0) g_odata[blockIdx.x] = idata[0];
+}
+
+/**
+ * @brief kernel 3
+ * 
+ * @param g_idata 
+ * @param g_odata 
+ * @param n 
+ * @return __global__ 
+ */
+__global__ void reduceInterLeaved (int *g_idata, int *g_odata, unsigned int n)
+{
+    unsigned int tid = threadIdx.x;
+	unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // data index for each bloack (local pointer) in global mem
+	int *idata = g_idata + blockIdx.x * blockDim.x;
+
+    // boundary check
+	if (idx >= n) return;
+
+    for (int stride = blockDim.x / 2; stride < blockDim.x; stride >> 1)
+	{    
+		if (tid < stride)
+		{
+			idata[tid] += idata[tid+ stride];
+		}
+		__syncthreads(); // inner block sync (wait for each block to finish)
+	} 
+
 
     // store result from each block (1st elements) to out put array
     if (tid == 0) g_odata[blockIdx.x] = idata[0];
@@ -93,8 +166,8 @@ int main(int argc, char const *argv[])
     int cpu_sum = recursiveReduce(tmp, size);
     auto endTime = std::chrono::high_resolution_clock::now();
     auto iElaps = std::chrono::duration_cast<std::chrono::microseconds>(endTime-iStart);
-    double duration = iElaps.count();
-    std::cout << "\nCPU reduce recusice: " << duration << " microsec cpu_sum: " 
+    double cpu_duration = iElaps.count();
+    std::cout << "\nCPU reduce recusice: " << cpu_duration << " microsec cpu_sum: " 
                 << cpu_sum << std::endl;
 
     int gpu_sum;
@@ -108,18 +181,59 @@ int main(int argc, char const *argv[])
 
     endTime = std::chrono::high_resolution_clock::now();
     iElaps = std::chrono::duration_cast<std::chrono::microseconds>(endTime-iStart);
-    duration = iElaps.count();
+    double gpu_duration = iElaps.count();
+    double improved = (cpu_duration - gpu_duration) / cpu_duration * 100;
+
+    cudaMemcpy(h_odata, d_odata, grid.x * sizeof(int), cudaMemcpyDeviceToHost);
+    gpu_sum = 0;
+    for (int i = 0; i < grid.x; i++) gpu_sum += h_odata[i];
+
+    std::cout << "GPU reduce neighbored: " << gpu_duration << " microsec gpu_sum: " 
+                << gpu_sum << " with "<< improved << "% improved!" <<std::endl;
+    if (gpu_sum != cpu_sum) std::cout << "Test result failed: sum result not match!" << std::endl;
+
+
+    // kernel 2: reduceNeighboaredLess
+    cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice);
+    cudaDeviceSynchronize();
+    iStart = std::chrono::high_resolution_clock::now();
+
+    reduceNeighboredLess<<<grid, block>>>(d_idata, d_odata, size);
+    cudaDeviceSynchronize();
+
+    endTime = std::chrono::high_resolution_clock::now();
+    iElaps = std::chrono::duration_cast<std::chrono::microseconds>(endTime-iStart);
+    gpu_duration = iElaps.count();
+    improved = (cpu_duration - gpu_duration) / cpu_duration * 100;
     
     cudaMemcpy(h_odata, d_odata, grid.x * sizeof(int), cudaMemcpyDeviceToHost);
     gpu_sum = 0;
     for (int i = 0; i < grid.x; i++) gpu_sum += h_odata[i];
 
-    std::cout << "GPU reduce neighbored: " << duration << " microsec gpu_sum: " 
-                << gpu_sum << std::endl;
-    if (gpu_sum != cpu_sum) std::cout << "Test result failed: sum result not match!" << std::endl;
+    std::cout << "GPU reduce neighbored less: " << gpu_duration << " microsec gpu_sum: " 
+                << gpu_sum << " with "<< improved << "% improved!" <<std::endl;
+    if (gpu_sum != cpu_sum) std::cout << "Test result failed: sum result not match!" << std::endl; 
 
+    // kernel 3: interleaved 
+    cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice);
+    cudaDeviceSynchronize();
+    iStart = std::chrono::high_resolution_clock::now();
 
+    reduceInterLeaved<<<grid, block>>>(d_idata, d_odata, size);
+    cudaDeviceSynchronize();
+
+    endTime = std::chrono::high_resolution_clock::now();
+    iElaps = std::chrono::duration_cast<std::chrono::microseconds>(endTime-iStart);
+    gpu_duration = iElaps.count();
+    improved = (cpu_duration - gpu_duration) / cpu_duration * 100;
     
+    cudaMemcpy(h_odata, d_odata, grid.x * sizeof(int), cudaMemcpyDeviceToHost);
+    gpu_sum = 0;
+    for (int i = 0; i < grid.x; i++) gpu_sum += h_odata[i];
+
+    std::cout << "GPU reduce interleaved: " << gpu_duration << " microsec gpu_sum: " 
+                << gpu_sum << " with "<< improved << "% improved!" <<std::endl;
+    if (gpu_sum != cpu_sum) std::cout << "Test result failed: sum result not match!" << std::endl; 
 
 
 
