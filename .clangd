@@ -1,2 +1,9 @@
-CompileFlags:
-  Add: [-ferror-limit=0]
+CompileFlags: 
+Add:
+    - -std=c++17
+    - --cuda-path=/opt/cuda/bin
+    - --cuda-gpu-arch=sm_89
+    - -I/opt/cuda/include
+    - -I./cuda-pro-c/include
+    - -L/opt/cuda/lib64
+    - -ferror-limit=0

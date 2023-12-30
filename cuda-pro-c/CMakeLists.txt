@@ -1,6 +1,5 @@
 add_executable(reduce-integer)
 target_sources(reduce-integer PRIVATE 03/reduce-integer.cu)
-target_include_directories(reduce-integer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/03/include)
-# message(${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(reduce-integer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # set_target_properties(reduce-integer PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # include_directories(include)

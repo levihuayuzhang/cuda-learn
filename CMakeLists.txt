@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(cuda-learn CXX C)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 enable_language(CUDA)
 # https://cmake.org/cmake/help/latest/module/FindCUDAToolkit.html
@@ -9,6 +9,7 @@ set(CUDA_RUNTIME_LIBRARY Shared)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_ARCHITECTURES 89)
+# set(CMAKE_CUDA_COMPILER clang++)
 
 # enable debug device code
 # https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html
@@ -17,9 +18,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 # set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo")
 
-# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -m64")
-# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -v")
-# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --ptxas-options=-v")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -m64")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -v")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --ptxas-options=-v")
 
 # # define files
 # file(GLOB cpu_source_files "${CMAKE_SOURCE_DIR}/src/*.cc")
