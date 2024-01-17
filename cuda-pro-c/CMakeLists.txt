@@ -12,3 +12,5 @@ target_compile_options(nested-hello PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
     >)
 set_target_properties(nested-hello PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # target_link_libraries(nested-hello cudadevrt) # enabled automatically in CUDA12.3
+
+add_executable(nested-reduce 03/nested-reduce.cu)
